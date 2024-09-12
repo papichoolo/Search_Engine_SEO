@@ -13,7 +13,7 @@ def search_query(query):
 
     results_df = pd.DataFrame(results)
     return results_df
-    # results_df.to_csv('search_results.csv', index=False)
+    #results_df.to_csv('search_results.csv', index=False)
 
 
-# search_query(search_query)
+search_query(search_query)
