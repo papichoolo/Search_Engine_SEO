@@ -1,6 +1,7 @@
 from langchain.text_splitter import CharacterTextSplitter
-from langchain_community.embeddings import OllamaEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from tqdm import tqdm
+from langchain_community.vectorstores import Chroma
 
 def split_documents(documents, chunk_size=7500, chunk_overlap=100):
     """
@@ -36,13 +37,11 @@ def make_document_embeddings(documents):
     - List of tuples containing document id and its corresponding embedding.
     """
     # Initialize the embedding model
-    embedding_model = OllamaEmbeddings(model='nomic-embed-text',show_progress=True)
+    embedding_model = OpenAIEmbeddings()
     
-    # Generate embeddings for each document
-    embeddings = []
-    for doc in tqdm(documents, total=len(documents)):
-        embedding = embedding_model.embed_documents(doc.page_content)
-        embeddings.append((doc.id, embedding))
-    
-    print(f"Generated embeddings for {len(documents)} documents.")
-    return embeddings
+    vectorstore = Chroma.from_documents(
+    documents=documents,
+    collection_name="rag-chroma",
+    embedding=OpenAIEmbeddings(),
+)
+    retriever = vectorstore.as_retriever()
